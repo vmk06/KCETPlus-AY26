@@ -159,8 +159,6 @@
         attrition: document.getElementById('attrition'),
         leadershipCount: document.getElementById('leadershipCount'),
         leadershipSalary: document.getElementById('leadershipSalary'),
-        srFacultyCount: document.getElementById('srFacultyCount'),
-        srFacultySalary: document.getElementById('srFacultySalary'),
         jrFacultyCount: document.getElementById('jrFacultyCount'),
         jrFacultySalary: document.getElementById('jrFacultySalary'),
         salesCount: document.getElementById('salesCount'),
@@ -190,8 +188,6 @@
         attrition: document.getElementById('attritionValue'),
         leadershipCount: document.getElementById('leadershipCountValue'),
         leadershipSalary: document.getElementById('leadershipSalaryValue'),
-        srFacultyCount: document.getElementById('srFacultyCountValue'),
-        srFacultySalary: document.getElementById('srFacultySalaryValue'),
         jrFacultyCount: document.getElementById('jrFacultyCountValue'),
         jrFacultySalary: document.getElementById('jrFacultySalaryValue'),
         salesCount: document.getElementById('salesCountValue'),
@@ -252,7 +248,6 @@
         // 3. Recalculate dynamic costs
         const manpowerCosts = {
             leadership: input.leadershipCount * input.leadershipSalary * 100000,
-            srFaculty: input.srFacultyCount * input.srFacultySalary * 100000,
             jrFaculty: input.jrFacultyCount * input.jrFacultySalary * 100000,
             sales: input.salesCount * input.salesSalary * 100000,
             admin: input.adminCount * input.adminSalary * 100000,
@@ -337,8 +332,7 @@
         // 7. Update Manpower & CapEx Tables
         manpowerTableBody.innerHTML = `
             <tr><td class="px-2 py-1">Leadership</td><td class="px-2 py-1 text-center">${input.leadershipCount}</td><td class="px-2 py-1 text-right">${formatCurrency(input.leadershipSalary*100000, 'L', 1)}</td><td class="px-2 py-1 text-right">${formatCurrency(manpowerCosts.leadership, 'L', 1)}</td></tr>
-            <tr><td class="px-2 py-1">Senior Faculty</td><td class="px-2 py-1 text-center">${input.srFacultyCount}</td><td class="px-2 py-1 text-right">${formatCurrency(input.srFacultySalary*100000, 'L', 1)}</td><td class="px-2 py-1 text-right">${formatCurrency(manpowerCosts.srFaculty, 'L', 1)}</td></tr>
-            <tr><td class="px-2 py-1">Junior Faculty</td><td class="px-2 py-1 text-center">${input.jrFacultyCount}</td><td class="px-2 py-1 text-right">${formatCurrency(input.jrFacultySalary*100000, 'L', 1)}</td><td class="px-2 py-1 text-right">${formatCurrency(manpowerCosts.jrFaculty, 'L', 1)}</td></tr>
+            <tr><td class="px-2 py-1">Faculty</td><td class="px-2 py-1 text-center">${input.jrFacultyCount}</td><td class="px-2 py-1 text-right">${formatCurrency(input.jrFacultySalary*100000, 'L', 1)}</td><td class="px-2 py-1 text-right">${formatCurrency(manpowerCosts.jrFaculty, 'L', 1)}</td></tr>
             <tr><td class="px-2 py-1">Sales & Counsel.</td><td class="px-2 py-1 text-center">${input.salesCount}</td><td class="px-2 py-1 text-right">${formatCurrency(input.salesSalary*100000, 'L', 1)}</td><td class="px-2 py-1 text-right">${formatCurrency(manpowerCosts.sales, 'L', 1)}</td></tr>
             <tr><td class="px-2 py-1">Admin & Support</td><td class="px-2 py-1 text-center">${input.adminCount}</td><td class="px-2 py-1 text-right">${formatCurrency(input.adminSalary*100000, 'L', 1)}</td><td class="px-2 py-1 text-right">${formatCurrency(manpowerCosts.admin, 'L', 1)}</td></tr>
             <tr class="font-bold bg-slate-50"><td class="px-2 py-1">Total Salaries</td><td></td><td></td><td class="px-2 py-1 text-right">${formatCurrency(totalSalariesY1, 'L', 1)}</td></tr>`;
@@ -391,7 +385,7 @@
 
         // Sheet 1: Summary & Inputs
         const summaryData = [
-            ["Quantum College - Financial Summary"],
+            ["KCET Plus - Financial Summary"],
             [],
             ["Key Inputs", "Value", "", "Key Metrics", "Value"],
             ["Y1 Class XI Intake", input.studentIntake_xi, "", "Peak Funding Required", calculations.peakFunding],
@@ -443,8 +437,7 @@
             [],
             ["Team", "Count", "Avg. Salary (LPA)", "Annual Cost"],
             ["Leadership & Mgmt", input.leadershipCount, input.leadershipSalary, calculations.manpowerCosts.leadership],
-            ["Senior Faculty", input.srFacultyCount, input.srFacultySalary, calculations.manpowerCosts.srFaculty],
-            ["Junior Faculty", input.jrFacultyCount, input.jrFacultySalary, calculations.manpowerCosts.jrFaculty],
+            ["Faculty", input.jrFacultyCount, input.jrFacultySalary, calculations.manpowerCosts.jrFaculty],
             ["Sales & Counsellors", input.salesCount, input.salesSalary, calculations.manpowerCosts.sales],
             ["Admin & Support", input.adminCount, input.adminSalary, calculations.manpowerCosts.admin],
             ["Total Salaries", "", "", calculations.totalSalariesY1]
@@ -471,7 +464,7 @@
         XLSX.utils.book_append_sheet(wb, ws_cashflow, "Monthly Cash Flow");
 
 
-        XLSX.writeFile(wb, "Quantum_College_Financials.xlsx");
+        XLSX.writeFile(wb, "KCET_Plus_Financials.xlsx");
     }
 
 
