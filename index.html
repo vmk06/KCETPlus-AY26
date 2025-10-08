@@ -12,6 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
@@ -128,6 +129,13 @@
                         <div class="overflow-x-auto"><table class="w-full text-sm text-left text-slate-500"><thead class="text-xs text-slate-700 uppercase bg-slate-50"><tr><th class="px-2 py-1">Team</th><th class="px-2 py-1 text-center">Count</th><th class="px-2 py-1 text-right">Avg Salary</th><th class="px-2 py-1 text-right">Total Cost</th></tr></thead><tbody id="manpowerTableBody"></tbody></table></div>
                     </div>
                     <div class="bg-white p-6 rounded-lg shadow">
+                        <h3 class="text-lg font-bold text-slate-900 mb-4">Operational Expenses (Year 1)</h3>
+                        <div class="overflow-x-auto"><table class="w-full text-sm text-left text-slate-500"><thead class="text-xs text-slate-700 uppercase bg-slate-50"><tr><th class="px-2 py-1">Item</th><th class="px-2 py-1 text-right">Cost (₹ Lakhs)</th></tr></thead><tbody id="opexTableBody"></tbody></table></div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 gap-8 mb-8">
+                    <div class="bg-white p-6 rounded-lg shadow">
                         <h3 class="text-lg font-bold text-slate-900 mb-4">Capital Expenditure Breakdown</h3>
                         <div class="space-y-3 text-sm">
                             <div class="flex justify-between"><span>Campus Fit-outs:</span> <strong id="capexFitoutValue">₹65,00,000</strong></div>
@@ -139,6 +147,7 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </main>
     </div>
@@ -208,6 +217,7 @@
 
     const pnlTableBody = document.getElementById('pnlTableBody');
     const manpowerTableBody = document.getElementById('manpowerTableBody');
+    const opexTableBody = document.getElementById('opexTableBody'); // New table body
     
     // Initial Data (Baseline from the plan)
     const baseData = {
@@ -285,7 +295,7 @@
         const pbtY1 = ebitdaY1 - depreciation;
         const patY1 = pbtY1 - (pbtY1 > 0 ? pbtY1 * 0.25 : 0);
         
-        // Year 2 & 3 Calculations with escalations
+        // Year 2 & 3 Calculations
         const salaryEscFactor = 1 + input.salaryEscalation / 100;
         const rentEscFactor = 1 + input.rentEscalation / 100;
         const totalIntakeY1 = input.studentIntake_xi + input.studentIntake_xii;
@@ -329,7 +339,7 @@
             <tr class="bg-white border-b font-semibold"><td class="px-4 py-2">EBITDA</td><td class="px-4 py-2 text-right ${ebitdaY1 < 0 ? 'text-red-500' : 'text-green-500'}">${formatLakhs(ebitdaY1)}</td><td class="px-4 py-2 text-right ${ebitdaY2 < 0 ? 'text-red-500' : 'text-green-500'}">${formatLakhs(ebitdaY2)}</td><td class="px-4 py-2 text-right ${ebitdaY3 < 0 ? 'text-red-500' : 'text-green-500'}">${formatLakhs(ebitdaY3)}</td></tr>
             <tr class="bg-white border-b font-semibold text-slate-800"><td class="px-4 py-2">Net Profit (PAT)</td><td class="px-4 py-2 text-right ${patY1 < 0 ? 'text-red-500' : 'text-green-500'}">${formatLakhs(patY1)}</td><td class="px-4 py-2 text-right ${patY2 < 0 ? 'text-red-500' : 'text-green-500'}">${formatLakhs(patY2)}</td><td class="px-4 py-2 text-right ${patY3 < 0 ? 'text-red-500' : 'text-green-500'}">${formatLakhs(patY3)}</td></tr>`;
 
-        // 7. Update Manpower & CapEx Tables
+        // 7. Update Manpower, OpEx & CapEx Tables
         manpowerTableBody.innerHTML = `
             <tr><td class="px-2 py-1">Leadership</td><td class="px-2 py-1 text-center">${input.leadershipCount}</td><td class="px-2 py-1 text-right">${formatCurrency(input.leadershipSalary*100000, 'L', 1)}</td><td class="px-2 py-1 text-right">${formatCurrency(manpowerCosts.leadership, 'L', 1)}</td></tr>
             <tr><td class="px-2 py-1">Faculty</td><td class="px-2 py-1 text-center">${input.jrFacultyCount}</td><td class="px-2 py-1 text-right">${formatCurrency(input.jrFacultySalary*100000, 'L', 1)}</td><td class="px-2 py-1 text-right">${formatCurrency(manpowerCosts.jrFaculty, 'L', 1)}</td></tr>
@@ -337,6 +347,16 @@
             <tr><td class="px-2 py-1">Admin & Support</td><td class="px-2 py-1 text-center">${input.adminCount}</td><td class="px-2 py-1 text-right">${formatCurrency(input.adminSalary*100000, 'L', 1)}</td><td class="px-2 py-1 text-right">${formatCurrency(manpowerCosts.admin, 'L', 1)}</td></tr>
             <tr class="font-bold bg-slate-50"><td class="px-2 py-1">Total Salaries</td><td></td><td></td><td class="px-2 py-1 text-right">${formatCurrency(totalSalariesY1, 'L', 1)}</td></tr>`;
         
+        opexTableBody.innerHTML = `
+            <tr><td class="px-2 py-1">Total Salaries</td><td class="px-2 py-1 text-right">₹${formatLakhs(totalSalariesY1)}</td></tr>
+            <tr><td class="px-2 py-1">Marketing Budget</td><td class="px-2 py-1 text-right">₹${formatLakhs(marketingCostY1)}</td></tr>
+            <tr><td class="px-2 py-1">Campus Rent</td><td class="px-2 py-1 text-right">₹${formatLakhs(rentCostY1)}</td></tr>
+            <tr><td class="px-2 py-1">Electricity & Utilities</td><td class="px-2 py-1 text-right">₹${formatLakhs(utilitiesCostY1)}</td></tr>
+            <tr><td class="px-2 py-1">GST Payable</td><td class="px-2 py-1 text-right">₹${formatLakhs(gstPayableY1)}</td></tr>
+            <tr><td class="px-2 py-1">OpEx Contingency</td><td class="px-2 py-1 text-right">₹${formatLakhs(contingencyAmountY1)}</td></tr>
+            <tr class="font-bold bg-slate-50"><td class="px-2 py-1">Total OpEx</td><td class="px-2 py-1 text-right">₹${formatLakhs(opexY1)}</td></tr>
+        `;
+
         document.getElementById('capexFitoutValue').textContent = formatCurrency(input.fitoutCapex * 100000, null);
         document.getElementById('capexLabValue').textContent = formatCurrency(input.labCapex * 100000, null);
         document.getElementById('capexTechValue').textContent = formatCurrency(input.techCapex * 100000, null);
@@ -363,10 +383,50 @@
     // Chart Initialization and Update
     function initializeChart() {
         const ctx = document.getElementById('pnlChart').getContext('2d');
+        // Register the datalabels plugin
+        Chart.register(ChartDataLabels);
+        
         pnlChart = new Chart(ctx, {
             type: 'bar',
-            data: { labels: ['Year 1', 'Year 2', 'Year 3'], datasets: [{ label: 'Net Profit (PAT) in ₹ Lakhs', data: [], borderWidth: 1 }, { label: 'Net Revenue in ₹ Lakhs', data: [], type: 'line', borderColor: '#f59e0b', tension: 0.1 }] },
-            options: { scales: { y: { beginAtZero: false } }, plugins: { tooltip: { callbacks: { label: (context) => `${context.dataset.label}: ${context.raw.toFixed(2)}` } } } }
+            data: { 
+                labels: ['Year 1', 'Year 2', 'Year 3'], 
+                datasets: [
+                    { 
+                        label: 'Net Profit (PAT) in ₹ Lakhs', 
+                        data: [], 
+                        borderWidth: 1 
+                    }, 
+                    { 
+                        label: 'Net Revenue in ₹ Lakhs', 
+                        data: [], 
+                        type: 'line', 
+                        borderColor: '#f59e0b',
+                        backgroundColor: '#f59e0b',
+                        tension: 0.1 
+                    }
+                ] 
+            },
+            options: { 
+                scales: { y: { beginAtZero: false } }, 
+                plugins: { 
+                    tooltip: { 
+                        callbacks: { 
+                            label: (context) => `${context.dataset.label}: ${context.raw.toFixed(2)}` 
+                        } 
+                    },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'top',
+                        formatter: (value) => {
+                            return value.toFixed(1) + ' L';
+                        },
+                        font: {
+                            weight: 'bold'
+                        },
+                        color: '#475569' // slate-600
+                    }
+                } 
+            }
         });
     }
 
